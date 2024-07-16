@@ -1,0 +1,68 @@
+
+let employees = []; //initialize array of an employee
+function loadEmployees() {
+  const storedEmployees = localStorage.getItem('employees');
+  if (storedEmployees) {
+    employees = JSON.parse(storedEmployees);
+  }
+}
+
+// function to Save employees
+function saveEmployees() {
+  localStorage.setItem('employees', JSON.stringify(employees));
+}
+
+// function to Add a new employee
+function addEmployee(id, name, position, department) {
+  const newEmployee = {
+    id: id,
+    name: name,
+    position: position,
+    department: department
+  };
+  employees.push(newEmployee);
+  saveEmployees();
+  return newEmployee;
+}
+
+// List all employees
+function listEmployees() {
+  return employees;
+}
+
+// Find an employee by ID
+function findEmployee(id) {
+  return employees.find(employee => employee.id === id);
+}
+
+// Update an employee information
+
+function updateEmployee(id, newName, newPosition, newDepartment) {
+  const index = employees.findIndex(employee => employee.id === id);
+  if (index !== -1) {
+    employees[index] = {
+      ...employees[index],
+      name: newName,
+      position: newPosition,
+      department: newDepartment
+    };
+    saveEmployees();
+    return employees[index];
+  }
+  return null;
+}
+
+// DELETINGING  employee
+function deleteEmployee(id) {
+  const index = employees.findIndex(employee => employee.id === id);
+  if (index !== -1) {
+    const deletedEmployee = employees.splice(index, 1)[0];
+    saveEmployees();
+    return deletedEmployee;
+  }
+  return null;
+}
+
+// Initializing the system(IF NEEDED)
+loadEmployees();
+
