@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Countdown Timer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .container {
+            text-align: center;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        #timer {
+            font-size: 48px;
+            margin: 20px 0;
+        }
+        input, button {
+            font-size: 18px;
+            padding: 5px 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Countdown Timer</h1>
+        <input type="number" id="timeInput" placeholder="Enter seconds">
+        <button onclick="startTimer()">Start</button>
+        <div id="timer">00:00</div>
+    </div>
+
+    <script>
+        let countdown;
+        let remainingTime;
+
+        function startTimer() {
+            clearInterval(countdown);
+            const seconds = parseInt(document.getElementById('timeInput').value);
+            if (isNaN(seconds) || seconds <= 0) {
+                alert("Please enter a valid positive number.");
+                return;
+            }
+            remainingTime = seconds;
+            updateTimerDisplay();
+            
+            countdown = setInterval(() => {
+                remainingTime--;
+                updateTimerDisplay();
+                
+                if (remainingTime <= 0) {
+                    clearInterval(countdown);
+                    alert("Time's up!");
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(remainingTime / 60);
+            const seconds = remainingTime % 60;
+            document.getElementById('timer').textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+    </script>
+</body>
+</html>
