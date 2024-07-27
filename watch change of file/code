@@ -1,0 +1,73 @@
+const fs = require('fs');
+const path = require('path');
+
+const commandFile = path.join(__dirname, 'command.txt');
+
+// Function to execute commands
+function executeCommand(command) {
+    const parts = command.split(' ');
+    
+    switch(parts[0]) {
+        case 'create':
+            if (parts[1] === 'a' && parts[2] === 'file' && parts[3]) {
+                fs.writeFile(parts[3], '', (err) => {
+                    if (err) console.error(`Error creating file: ${err}`);
+                    else console.log(`File ${parts[3]} created successfully.`);
+                });
+            }
+            break;
+        
+        case 'delete':
+            if (parts[1] === 'the' && parts[2] === 'file' && parts[3]) {
+                fs.unlink(parts[3], (err) => {
+                    if (err) console.error(`Error deleting file: ${err}`);
+                    else console.log(`File ${parts[3]} deleted successfully.`);
+                });
+            }
+            break;
+        
+        case 'rename':
+            if (parts[1] === 'the' && parts[2] === 'file' && parts[3] && parts[5] === 'to' && parts[6]) {
+                fs.rename(parts[3], parts[6], (err) => {
+                    if (err) console.error(`Error renaming file: ${err}`);
+                    else console.log(`File renamed from ${parts[3]} to ${parts[6]} successfully.`);
+                });
+            }
+            break;
+        
+        case 'add':
+            if (parts[1] === 'to' && parts[2] === 'the' && parts[3] === 'file' && parts[4]) {
+                const content = parts.slice(5).join(' ') + '\n';
+                fs.appendFile(parts[4], content, (err) => {
+                    if (err) console.error(`Error appending to file: ${err}`);
+                    else console.log(`Content added to ${parts[4]} successfully.`);
+                });
+            }
+            break;
+        
+        default:
+            console.log(`Unknown command: ${command}`);
+    }
+}
+
+// Watch for changes in the command file
+fs.watch(commandFile, (eventType, filename) => {
+    if (eventType === 'change') {
+        fs.readFile(commandFile, 'utf8', (err, data) => {
+            if (err) {
+                console.error(`Error reading file: ${err}`);
+                return;
+            }
+            const command = data.trim();
+            console.log(`Executing command: ${command}`);
+            executeCommand(command);
+            
+            // Clear the command file
+            fs.writeFile(commandFile, '', (err) => {
+                if (err) console.error(`Error clearing command file: ${err}`);
+            });
+        });
+    }
+});
+
+console.log(`Watching for changes in ${commandFile}...`);
